@@ -9,19 +9,30 @@ import java.sql.SQLException;
  */
 public class Conexion {
 
-    public Connection get_connection() {
-        Connection con = null;
+    private static Connection connection;
 
-        try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mensajes_app", "root", "mysql");
+    public static Connection getConnection() {
 
-            if (con != null) {
-                System.out.println("Conectado");
+        if (connection == null) {
+            try {
+                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mensajes_app", "root", "mysql");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
         }
-        
-        return con;
+        return connection;
+    }
+
+    public static void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                connection = null;
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        System.out.println("Conexion cerrada");
     }
 }
